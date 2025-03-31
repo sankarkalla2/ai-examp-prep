@@ -1,10 +1,24 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { auth, signOut } from "@/auth";
 
-export default function Home() {
+function SignOut() {
+  return (
+    <form
+      action={async () => {
+        "use server";
+        await signOut();
+      }}
+    >
+      <button type="submit">Sign Out</button>
+    </form>
+  );
+}
+
+export default async function Home() {
+  const session = await auth();
   return (
     <div>
-      <Button>Click me</Button>
+      <p>{session?.user?.email}</p>
+      <SignOut />
     </div>
   );
 }

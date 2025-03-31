@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,8 +22,22 @@ export default async function RootLayout({
   const session = await auth();
   console.log(session?.user);
   return (
-    <html lang="en">
-      <body className={`${inter.className}  antialiased`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <SessionProvider session={session}>
+        <body
+          className={`${inter.className} 
+         antialiased`}
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </SessionProvider>
     </html>
   );
 }
