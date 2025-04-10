@@ -12,26 +12,9 @@ const utapi = new UTApi({
 export async function uploadFiles(
   pdfData: PDFData[],
   type: SubjectType,
+  userId: string,
   subjectId?: string
 ) {
-  const session = await auth();
-  if (!session) {
-    return null;
-  }
-
-  const user = await db.user.findUnique({
-    where: {
-      id: session.user?.id,
-    },
-    include: {
-      subjects: true,
-    },
-  });
-
-  if (!user) return null;
-
-  //WIP: check subscription & files management.
-
   const files = pdfData.map((pdf) => pdf.file);
   const response = await utapi.uploadFiles(files);
   if (!subjectId) {
@@ -40,10 +23,11 @@ export async function uploadFiles(
         title: "Untitle 1",
         type: type,
         name: "unititlj2j",
-        userId: user?.id,
+        userId: userId,
         SubjectFile: {
-          create: response.map((file) => ({
+          create: response.map((file, index) => ({
             fileKey: file.data?.key ?? "",
+            order: index + 1,
           })),
         },
       },

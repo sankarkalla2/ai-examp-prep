@@ -131,11 +131,11 @@ model SubjectAnalytics {
 }
 
 model SubjectFile {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   subjectId String
   fileKey   String
-
-  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  order     Int
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 }
 
 model MCQ {
